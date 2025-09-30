@@ -1,14 +1,21 @@
 #!/bin/bash
-set -e
+
+# Переходим в директорию скрипта
+cd "$(dirname "$0")"
+
+# Проверка Makefile
+if [ ! -f Makefile ]; then
+    echo "Ошибка: Makefile не найден!"
+    exit 1
+fi
 
 echo "Сборка cxlib..."
-mkdir -p build
-cd build
 make
 
-echo "Копирование заголовков и библиотеки в /usr/local..."
-sudo cp ../include/*.h /usr/local/include/
+echo "Копирование заголовков..."
+sudo cp include/*.h /usr/local/include/
+
+echo "Копирование библиотеки..."
 sudo cp libcxlib.a /usr/local/lib/
 
-echo "Установка завершена!"
-echo "Теперь можно подключать #include <cxlib.h> и линковать с -lcxlib"
+echo "cxlib успешно установлена!"
