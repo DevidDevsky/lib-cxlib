@@ -1,159 +1,184 @@
-CXLib
+# CxLib - Useful C Library
 
-CXLib — это легковесная библиотека на C для удобной работы с консолью, математикой и криптографией.
-Библиотека включает три модуля:
-	•	cconsole.h — цветной вывод текста, рамки, таблицы
-	•	cmathx.h — расширенные математические функции, включая работу с матрицами
-	•	ccrypto.h — хеши (MD5, SHA1, SHA256) и Base64
+CxLib is a lightweight C library providing a set of useful functions for console operations, cryptography, and mathematical computations.
 
-⸻
+## 📦 Installation
 
-📦 Установка
-Linux / macOS
+### Linux/macOS
 ```bash
-1.	Установите OpenSSL (для криптографии):
-
-# macOS (Homebrew)
-brew install openssl
-
-# Ubuntu/Debian
-sudo apt update
-sudo apt install libssl-dev
-
-2.	Клонируйте репозиторий:
-
+# Clone the repository
 git clone https://github.com/DevidDevsky/lib-cxlib.git
 cd lib-cxlib
 
-3.	Соберите библиотеку:
-
+# Compile and install
 make
-
-Файл libcxlib.a будет готов в корне проекта, тесты — в test/.
+sudo make install
 ```
-⸻
+
+### Windows
+1. Clone the repository
+2. Open command prompt in the project folder
+3. Run:
+   ```
+   install.bat
+   ```
+
+## 📚 Documentation
+
+### 1. cconsole Module
+Functions for colored console output.
+
+```c
+#include <cconsole.h>
+
+// Example of colored output
+cprintf(C_RED, "This text will be red\n");
+cprintf(C_GREEN, "This text will be green\n");
+```
+
+### 2. ccrypto Module
+Cryptographic functions.
+
+```c
+#include <ccrypto.h>
+
+// Hashing
+char *hash = md5("Hello, World!");
+printf("MD5: %s\n", hash);
+free(hash);
+
+// Base64 encoding/decoding
+char *encoded = base64_encode((unsigned char*)"Hello", 5);
+printf("Base64: %s\n", encoded);
+free(encoded);
+```
+
+### 3. cmathx Module
+Mathematical functions and matrix operations.
+
+```c
+#include <cmathx.h>
+
+// Prime number check
+if (is_prime(17)) {
+    printf("17 is a prime number\n");
+}
+
+// Matrix operations
+matrix_t *a = matrix_create(2, 2);
+// ... initialize matrix ...
+matrix_t *b = matrix_create(2, 2);
+// ... initialize matrix ...
+matrix_t *result = matrix_add(a, b);
+// ... work with result ...
+matrix_free(a);
+matrix_free(b);
+matrix_free(result);
+```
+
+## 🚀 Examples
+
+Check the `test/` directory for usage examples:
+
+1. `test_console.c` - colored console output examples
+2. `test_crypto.c` - cryptographic operations examples
+3. `test_math.c` - mathematical operations examples
+
+To compile and run tests:
+```bash
+make test
+```
+
+## 🔧 Compilation
+
+To compile the library manually:
 
 ```bash
-Windows (MSYS2 / MinGW)
-1.	Установите OpenSSL через MSYS2:
+gcc -c src/*.c -Iinclude/
+ar rcs libcxlib.a *.o
+```
 
+To use in your project:
+1. Include the header files from `include/`
+2. Link with `-lcxlib` and `-lssl -lcrypto` for crypto functions
+3. Make sure OpenSSL is installed on your system
+
+### Dependencies
+
+#### Linux/macOS
+```bash
+# For Ubuntu/Debian
+sudo apt-get install libssl-dev
+
+# For macOS (using Homebrew)
+brew install openssl
+```
+
+#### Windows (MSYS2/MinGW)
+```bash
+# Install OpenSSL
 pacman -S mingw-w64-x86_64-openssl
 
-2.	Соберите библиотеку через MSYS2/Mingw:
-
-make
-
-В Windows нужно будет указать пути к include и lib OpenSSL, если они не находятся в стандартных папках.
+# Set the include and library paths if needed
+export C_INCLUDE_PATH=/mingw64/include/openssl
+export LIBRARY_PATH=/mingw64/lib
 ```
-⸻
 
-🧩 Модули и функции
+## 📝 API Reference
 
-1. cconsole.h
+### cconsole.h
+- `cprintf(ccolor_t color, const char *format, ...)` - Print formatted text with color
+- Available colors: `C_BLACK`, `C_RED`, `C_GREEN`, `C_YELLOW`, `C_BLUE`, `C_MAGENTA`, `C_CYAN`, `C_WHITE`, `C_RESET`
 
-Функции для красивого консольного вывода.
+### cmathx.h
+- `long long factorial(int n)` - Calculate factorial
+- `bool is_prime(int n)` - Check if number is prime
+- Matrix operations: `matrix_create()`, `matrix_add()`, `matrix_sub()`, `matrix_mul()`, `matrix_transpose()`, etc.
 
-#include "cconsole.h"
+### ccrypto.h
+- Hashing: `md5()`, `sha1()`, `sha256()`
+- Base64: `base64_encode()`, `base64_decode()`
 
-printf("Hello World!", ccolor.red); // красный текст
-	•	Цвета: ccolor.red, ccolor.green, ccolor.blue, ccolor.yellow, ccolor.pink
-	•	Можно добавлять рамки, таблицы и другие эффекты (добавим позже расширенные функции).
+## 🛠️ Building from Source
 
-⸻
-
-2. cmathx.h
-
-Базовые функции:
-
-#include "cmathx.h"
-
-long long f = factorial(5);    // факториал 5!
-bool prime = is_prime(17);     // true, если число простое
-
-Работа с матрицами:
-
-matrix_t *A = matrix_create(3, 3);
-matrix_t *B = matrix_create(3, 3);
-
-// Сложение / вычитание
-matrix_t *C = matrix_add(A, B);
-matrix_t *D = matrix_sub(A, B);
-
-// Умножение на число
-matrix_t *E = matrix_mul_scalar(A, 2.0);
-
-// Умножение матрицы на матрицу
-matrix_t *F = matrix_mul(A, B);
-
-// Транспонирование
-matrix_t *G = matrix_transpose(A);
-
-// Определитель и ранг
-double det = matrix_determinant(A);
-int rank = matrix_rank(A);
-
-// Освобождение памяти
-matrix_free(A);
-matrix_free(B);
-matrix_free(C);
-matrix_free(D);
-matrix_free(E);
-matrix_free(F);
-matrix_free(G);
-
-
-⸻
-
-3. ccrypto.h
-
-Функции для хеширования и Base64 (требуется OpenSSL).
-
-#include "ccrypto.h"
-
-// MD5 / SHA1 / SHA256
-char *md5_hash = md5("Hello");
-char *sha1_hash = sha1("Hello");
-char *sha256_hash = sha256("Hello");
-
-// Base64
-char *b64 = base64_encode((unsigned char*)"12345", strlen("12345"));
-size_t decoded_len;
-unsigned char *decoded = base64_decode(b64, &decoded_len);
-
-// Не забывайте освобождать память
-free(md5_hash);
-free(sha1_hash);
-free(sha256_hash);
-free(b64);
-free(decoded);
-
-
-⸻
-
-🏃‍♂️ Тесты
-
-Все тесты находятся в папке test/:
-•	test_console.c — тесты для цветного консольного вывода
-•	test_math.c — тесты для математики и матриц
-•	test_crypto.c — тесты для хешей и Base64
-
-Сборка и запуск:
-
+### Linux/macOS
+```bash
+make clean
 make
+sudo make install  # installs to /usr/local by default
+```
+
+### Windows (MSYS2/Mingw)
+```bash
+make clean
+make
+```
+
+## 🧪 Running Tests
+
+Test files are located in the `test/` directory:
+- `test_console.c` - Tests for colored console output
+- `test_math.c` - Tests for math functions and matrix operations
+- `test_crypto.c` - Tests for hashing and Base64 functions
+
+To compile and run all tests:
+```bash
+make test
+```
+
+Or run individual tests:
+```bash
 ./test/test_console
 ./test/test_math
 ./test/test_crypto
+```
 
+## ⚠️ Notes
 
-⸻
+1. OpenSSL is required for cryptographic functions
+2. Matrices are dynamically allocated - remember to free them with `matrix_free()`
+3. Matrix determinant is calculated using Gaussian elimination, which is safe for large matrices
 
-⚙️ Примечания
-	1.	Для работы криптографии требуется OpenSSL.
-	2.	Матрицы динамически выделяются, не забудьте вызывать matrix_free.
-	3.	Определитель вычисляется итеративно через метод Гаусса — безопасно для больших матриц.
+## 📜 License
 
-⸻
-
-📜 Лицензия
-
-MIT License.
+MIT License - see [LICENSE](LICENSE) file for details.
